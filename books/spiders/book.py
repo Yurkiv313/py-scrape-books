@@ -1,6 +1,8 @@
 import scrapy
 from scrapy.http import Response
 
+from books.items import BooksItem
+
 
 class BookSpider(scrapy.Spider):
     name = "book"
@@ -44,12 +46,13 @@ class BookSpider(scrapy.Spider):
 
         upc = response.css("table.table tr:nth-child(1) td::text").get()
 
-        yield {
-            "title": response.css(".product_main h1::text").get(),
-            "price": price,
-            "amount_in_stock": amount_in_stock,
-            "rating": rating,
-            "category": category,
-            "description": description,
-            "upc": upc
-        }
+        item = BooksItem()
+        item['title'] = response.css(".product_main h1::text").get()
+        item['price'] = price
+        item['amount_in_stock'] = amount_in_stock
+        item['rating'] = rating
+        item['category'] = category
+        item['description'] = description
+        item['upc'] = upc
+
+        yield item
